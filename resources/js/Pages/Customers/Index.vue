@@ -3,11 +3,7 @@ import { ref, onMounted } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Inertia } from '@inertiajs/inertia'
 
-const customers = ref([])
 
-onMounted(() => {
-  customers.value = props.customers // دریافت داده‌ها از props
-})
 
 const props = defineProps({ customers: Object })
 

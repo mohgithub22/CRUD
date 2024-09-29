@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
     public function index(){
-        $customers = Customer::all();
-        return Inertia::render('Customers/Index', [
-            'customers' => $customers
-        ]);
+         $customers = Customer::all();
+            return Inertia::render('Customers/Index', [
+                'customers' => $customers
+            ]);
+       
     }
     public function store(Request $request)
     {

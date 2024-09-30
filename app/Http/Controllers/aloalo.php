@@ -15,8 +15,6 @@ class aloalo extends Controller
     {
         $ar = Article::all();
         return view('mainindex', ['articles' => $ar]);
-        $artic = Article::find(10);
-        return $artic->catagories()->get();
     }
 
 

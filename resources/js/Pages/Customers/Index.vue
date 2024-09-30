@@ -10,6 +10,9 @@ const props = defineProps({ customers: Object })
 function createCustomer() {
   router.get('/customers/Create')
 }
+function dashbord(){
+  return router.get('/dashboard')
+}
 
 function editCustomer(customer) {
   router.get(`/customers/${customer.id}/edit`)
@@ -25,6 +28,8 @@ function deleteCustomer(id) {
 <template>
   <div class="container">
     <h1>لیست مشتریان</h1>
+        <button class="btn-primary" @click="dashbord">حساب کاربری</button>
+
     <button class="btn-primary" @click="createCustomer">ثبت مشتری جدید</button>
 
     <table>

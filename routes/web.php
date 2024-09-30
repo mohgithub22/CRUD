@@ -24,6 +24,6 @@ Route::middleware([
     Route::resource('customers', CustomerController::class);
 
 });
-
+Route::get('/lay' ,[CustomerController::class ,'Lay']);
 
 

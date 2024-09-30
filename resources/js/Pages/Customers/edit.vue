@@ -1,20 +1,20 @@
 <template>
-  <div class="container">
-    <h1>ویرایش مشتری</h1>
-    <form @submit.prevent="submit" class="form-container">
-      <div class="form-group">
-        <label>نام:</label>
-        <input v-model="form.name" type="text" class="input-field" />
+  <div class="max-w-md mx-auto my-12 p-6 bg-gray-100 rounded-lg shadow-md">
+    <h1 class="text-center text-2xl mb-6 text-gray-800 font-semibold">ویرایش مشتری</h1>
+    <form @submit.prevent="submit" class="flex flex-col gap-4">
+      <div class="flex flex-col">
+        <label class="text-gray-700 mb-1">نام:</label>
+        <input v-model="form.name" type="text" class="p-2 border border-gray-300 rounded focus:border-green-500 focus:outline-none" />
       </div>
-      <div class="form-group">
-        <label>ایمیل:</label>
-        <input v-model="form.email" type="email" class="input-field" />
+      <div class="flex flex-col">
+        <label class="text-gray-700 mb-1">ایمیل:</label>
+        <input v-model="form.email" type="email" class="p-2 border border-gray-300 rounded focus:border-green-500 focus:outline-none" />
       </div>
-      <div class="form-group">
-        <label>تلفن:</label>
-        <input v-model="form.phone" type="text" class="input-field" />
+      <div class="flex flex-col">
+        <label class="text-gray-700 mb-1">تلفن:</label>
+        <input v-model="form.phone" type="text" class="p-2 border border-gray-300 rounded focus:border-green-500 focus:outline-none" />
       </div>
-      <button type="submit" class="btn-submit">به‌روزرسانی</button>
+      <button type="submit" class="self-center mt-4 py-2 px-4 text-white bg-green-500 rounded hover:bg-green-600 transition duration-300">به‌روزرسانی</button>
     </form>
   </div>
 </template>
@@ -37,89 +37,3 @@ function submit() {
   form.put(`/customers/${props.cus.id}`)
 }
 </script>
-<style scoped>
-/* کانتینر اصلی */
-.container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #f7f7f7;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* عنوان */
-h1 {
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #333;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* استایل فرم */
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* استایل گروه فرم */
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-size: 1rem;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-/* استایل ورودی‌ها */
-.input-field {
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  transition: border-color 0.3s ease;
-}
-
-.input-field:focus {
-  border-color: #4CAF50;
-  outline: none;
-}
-
-/* دکمه ارسال */
-.btn-submit {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  align-self: center;
-  margin-top: 20px;
-}
-
-.btn-submit:hover {
-  background-color: #45a049;
-}
-
-/* استایل برای نمایش بهتر در دستگاه‌های موبایل */
-@media (max-width: 600px) {
-  .container {
-    padding: 15px;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  .btn-submit {
-    font-size: 0.9rem;
-  }
-}
-</style>

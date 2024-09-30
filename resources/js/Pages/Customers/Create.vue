@@ -1,17 +1,17 @@
 <template>
-  <div class="container">
-    <h1>ثبت مشتری جدید</h1>
-    <form @submit.prevent="submit" class="form">
-      <div class="form-group">
-        <input v-model="form.name" type="text" placeholder="نام مشتری" />
+  <div class="max-w-md mx-auto my-12 p-6 bg-gray-100 rounded-lg shadow-md">
+    <h1 class="text-center text-2xl mb-6 text-gray-800 font-semibold">ثبت مشتری جدید</h1>
+    <form @submit.prevent="submit" class="flex flex-col gap-4">
+      <div class="flex flex-col">
+        <input v-model="form.name" type="text" placeholder="نام مشتری" class="p-3 border border-gray-300 rounded focus:border-green-500 focus:outline-none" />
       </div>
-      <div class="form-group">
-        <input v-model="form.email" type="email" placeholder="ایمیل مشتری" />
+      <div class="flex flex-col">
+        <input v-model="form.email" type="email" placeholder="ایمیل مشتری" class="p-3 border border-gray-300 rounded focus:border-green-500 focus:outline-none" />
       </div>
-      <div class="form-group">
-        <input v-model="form.phone" type="text" placeholder="تلفن مشتری" />
+      <div class="flex flex-col">
+        <input v-model="form.phone" type="text" placeholder="تلفن مشتری" class="p-3 border border-gray-300 rounded focus:border-green-500 focus:outline-none" />
       </div>
-      <button type="submit" class="btn-primary">ثبت</button>
+      <button type="submit" class="mt-4 py-2 px-4 text-white bg-green-500 rounded hover:bg-green-600 transition duration-300">ثبت</button>
     </form>
   </div>
 </template>
@@ -38,66 +38,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-.container {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
-}
-
-input:focus {
-  border-color: #4CAF50;
-  outline: none;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #4CAF50;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-}
-
-@media (max-width: 600px) {
-  .container {
-    width: 100%;
-    padding: 15px;
-  }
-}
-</style>

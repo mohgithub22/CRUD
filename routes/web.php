@@ -21,7 +21,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-    Route::resource('customers', CustomerController::class);
+    Route::resource('customers', CustomerController::class)->names('customers');
 
 });
 Route::get('/lay' ,[CustomerController::class ,'Lay']);

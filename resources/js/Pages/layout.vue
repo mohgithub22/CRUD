@@ -51,6 +51,9 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
+                                <NavLink :href="route('customers.index')" :active="route().current('customers.index')">
+                                    Customers
+                                </NavLink>
                             </div>
                         </div>
 
@@ -191,13 +194,13 @@ const logout = () => {
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden':  !showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
+                    
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink href="http://127.0.0.1:8000/customers" :active="route().current('customers')">
+                        <ResponsiveNavLink :href="route('customers.index')" :active="route().current('customers')">
                             customers
                         </ResponsiveNavLink>
-                        <Link href="http://127.0.0.1:8000/customers">Customers</Link>
 
                     </div>
 
@@ -277,7 +280,6 @@ const logout = () => {
                     </div>
                 </div>
             </nav>
-                        <Link href="http://127.0.0.1:8000/customers">Customers</Link>
 
 
             <!-- Page Heading -->

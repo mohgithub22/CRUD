@@ -195,6 +195,7 @@ const logout = () => {
                         </div>
                     </div>
                 </div>
+                <slot name="index"></slot>
 
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden':  !showingNavigationDropdown}" >

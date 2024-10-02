@@ -54,7 +54,7 @@ const changePage = (page) => {
 <template>
   <app-layout>
   <template #index>
-  <!-- ارتفاع 30px -->
+  <!-- ارتفاع 30px --><div class="h-8"></div>
   <div class="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
     <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">لیست مشتریان</h1>
 

@@ -8,8 +8,8 @@ use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
-    public function index(){
-         $customers = Customer::all();
+    public function index(Request $request){
+        $customers = Customer::paginate(10); // 10 مورد در هر صفحه
             return Inertia::render('Customers/Index', [
                 'customers' => $customers
             ]);

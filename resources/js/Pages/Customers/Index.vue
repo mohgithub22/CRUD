@@ -46,6 +46,9 @@ const switchToTeam = (team) => {
 const logout = () => {
     router.post(router('logout'));
 };
+const changePage = (page) => {
+  router.get(`/customers?page=${page}`);
+};
 </script>
 
 <template>
@@ -70,7 +73,7 @@ const logout = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="customer in customers" :key="customer.id" class="text-center border-b hover:bg-gray-100">
+        <tr v-for="customer in customers.data" :key="customer.id " class="text-center border-b hover:bg-gray-100">
           <td class="px-4 py-2">{{ customer.name }}</td>
           <td class="px-4 py-2">{{ customer.email }}</td>
           <td class="px-4 py-2">{{ customer.phone }}</td>
@@ -81,6 +84,10 @@ const logout = () => {
         </tr>
       </tbody>
     </table>
+<div class="flex justify-center mt-4">
+          <button v-if="customers.current_page > 1" @click="changePage(customers.current_page - 1)">قبلی</button>
+          <button v-if="customers.current_page < customers.last_page" @click="changePage(customers.current_page + 1)">بعدی</button>
+        </div>
   </div></template>
   </app-layout>
 </template>

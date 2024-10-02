@@ -7,6 +7,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import index from '@/Pages/Customers/Index.vue';
+
 
 defineProps({
     title: String,
@@ -52,6 +54,12 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
                             </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('customers.index')" :active="route().current('customers.index')">
+                                    customers
+                                </NavLink>
+                            </div>
+                           
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -189,11 +197,14 @@ const logout = () => {
                 </div>
 
                 <!-- Responsive Navigation Menu -->
-                <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
+                <div :class="{'block': showingNavigationDropdown, 'hidden':  !showingNavigationDropdown}" >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+                        
+                        
+                        
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -275,9 +286,7 @@ const logout = () => {
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
+               
             </header>
 
             <!-- Page Content -->

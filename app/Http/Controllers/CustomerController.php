@@ -15,9 +15,7 @@ class CustomerController extends Controller
             ]);
        
     }
-    public function Lay(){
-        return Inertia::render('layout');
-    }
+
     public function store(Request $request)
     {
         $request->validate([

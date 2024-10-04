@@ -12,6 +12,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import { Inertia } from '@inertiajs/inertia'
 import { TailwindPagination } from 'laravel-vue-pagination';
 import axios from 'axios';
+import { route } from 'ziggy-js';
 function createCustomer() {
   axios.get(`/api/customers/Create`).then((response) => {
 
@@ -21,6 +22,7 @@ function dashbord(){
   return router.get(`/dashboard`)
 }
 const newCustomer = ref({ name: '', email: '', phone: '' }); // اطلاعات مشتری جدید
+const edit = ref({ name: '', email: '', phone: '' ,edit:'' }); // اطلاعات مشتری جدید
 
 // تابع برای ثبت مشتری جدید
 const submitNewCustomer = () => {
@@ -36,7 +38,7 @@ function editCustomer(customer) {
 router.get(`/customers/${customer.id}/edit`)
 }
 const isNewCustomerFormVisible = ref(false); // وضعیت نمایش فرم ثبت مشتری جدید
-
+const isNewCustomereditFormVisible =ref(false);
 const users = ref({
     "data": [], // لیست داده‌ها به‌صورت خالی
     "meta": {
@@ -47,8 +49,24 @@ const users = ref({
     }
 })
 
+
 function truecreatecustomer(){
   isNewCustomerFormVisible.value =true;
+}
+function trueeditcustomer(customer){
+  edit.value.name = customer.name
+  edit.value.email = customer.email
+  edit.value.phone = customer.phone
+  edit.value.id = customer.id
+  isNewCustomereditFormVisible.value =true;
+}
+function submitEditCustomer(){
+console.log(edit.value.id)
+
+  axios.put(`/customers/${edit.value.id}` ,edit.value).then(() => {
+    edit.value.id = "";
+  })
+
 }
 
 function deleteCustomer(id) {
@@ -57,7 +75,7 @@ function deleteCustomer(id) {
   }
 }
  const getCustomers = (page = 1) => {
-            axios.get(`/customers?page=${page}`).then((response)=>{
+            axios.get(`/api/customers?page=${page}`).then((response)=>{
             users.value = response.data;
 
             });
@@ -99,7 +117,13 @@ const changePage = (page) => {
        input(type="text" placeholder="نام" v-model="newCustomer.name" class="border rounded p-2 w-full mb-2")
        input(type="email" placeholder="ایمیل" v-model="newCustomer.email" class="border rounded p-2 w-full mb-2")
        input(type="text" placeholder="تلفن" v-model="newCustomer.phone" class="border rounded p-2 w-full mb-2")
-       button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitNewCustomer") ثبت
+       button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitNewCustomer") 
+       
+      div(v-if="isNewCustomereditFormVisible" class="mb-6")
+       input(type="text" placeholder="نام" v-model="edit.name" class="border rounded p-2 w-full mb-2")
+       input(type="email" placeholder="ایمیل" v-model="edit.email" class="border rounded p-2 w-full mb-2")
+       input(type="text" placeholder="تلفن" v-model="edit.phone" class="border rounded p-2 w-full mb-2")
+       button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitEditCustomer") ثبت
 
       table.w-full.table-auto.bg-white.rounded-lg.shadow-md.overflow-hidden
         thead.bg-gray-200
@@ -114,10 +138,10 @@ const changePage = (page) => {
             td.px-4.py-2 {{ customer?.email || 'email' }}
             td.px-4.py-2 {{ customer?.phone || 'phone' }}
             td.px-4.py-2
-              button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-1.px-3.rounded.mr-2(@click="editCustomer(customer)") ویرایش
+              button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-1.px-3.rounded.mr-2(@click="trueeditcustomer(customer)") ویرایش
               button.bg-red-500.hover.bg-red-600.text-white.font-semibold.py-1.px-3.rounded(@click="deleteCustomer(customer.id)") حذف
 
       div.flex.justify-center
-       TailwindPagination(:data="customers" @pagination-change-page="changePage")
+        TailwindPagination(:data="customers" @pagination-change-page="changePage")
 </template>
 

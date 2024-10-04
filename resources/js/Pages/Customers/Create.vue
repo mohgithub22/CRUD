@@ -46,7 +46,6 @@ app-layout
         .flex.flex-col
 
           input(v-model="form.phone" type="text" placeholder="تلفن مشتری" class="p-3 border border-gray-300 rounded focus:border-green-500 focus:outline-none")
-          button.mt-4.py-2.px-4.text-white.bg-green-500.rounded.hover.bg-green-600.transition.duration-300(type="submit")
-          | ثبت
+          button.mt-4.py-2.px-4.text-white.bg-green-500.rounded.hover.bg-green-600.transition.duration-300(type="submit") ثبت
         </template>
   

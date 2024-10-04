@@ -11,16 +11,44 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Inertia } from '@inertiajs/inertia'
 import { TailwindPagination } from 'laravel-vue-pagination';
-
+import axios from 'axios';
 function createCustomer() {
-  router.get('/customers/Create')
+  axios.get(`/api/customers/Create`).then((response) => {
+
+  })
 }
 function dashbord(){
   return router.get(`/dashboard`)
 }
+const newCustomer = ref({ name: '', email: '', phone: '' }); // اطلاعات مشتری جدید
+
+// تابع برای ثبت مشتری جدید
+const submitNewCustomer = () => {
+  axios.post('/customers', newCustomer.value).then(() => {
+    getCustomers(); // به‌روزرسانی لیست مشتریان
+    isNewCustomerFormVisible.value = false; // پنهان کردن فرم
+    newCustomer.value = { name: '', email: '', phone: '' };
+     // بازنشانی فرم
+  });
+};
 
 function editCustomer(customer) {
 router.get(`/customers/${customer.id}/edit`)
+}
+const isNewCustomerFormVisible = ref(false); // وضعیت نمایش فرم ثبت مشتری جدید
+
+const users = ref({
+    "data": [], // لیست داده‌ها به‌صورت خالی
+    "meta": {
+        current_page: 1, // صفحه فعلی
+        last_page: 1, // آخرین صفحه
+        per_page: 10, // تعداد موارد در هر صفحه
+        total: 0 // تعداد کل موارد
+    }
+})
+
+function truecreatecustomer(){
+  isNewCustomerFormVisible.value =true;
 }
 
 function deleteCustomer(id) {
@@ -29,11 +57,11 @@ function deleteCustomer(id) {
   }
 }
  const getCustomers = (page = 1) => {
-      router.get(`/customers?page=${page}`, {}, {
-        replace: true,
-      
-      })}
+            axios.get(`/customers?page=${page}`).then((response)=>{
+            users.value = response.data;
 
+            });
+    }
 defineProps({
     title: String,
     customers:Object
@@ -56,7 +84,6 @@ const changePage = (page) => {
   router.get(`/customers?page=${page}`);
 };
 </script>
-
 <template lang="pug">
  app-layout
   template(#index)
@@ -67,7 +94,12 @@ const changePage = (page) => {
 
       div.flex.justify-center.gap-4.mb-6
         button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-2.px-4.rounded(@click="dashbord") حساب کاربری
-        button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="createCustomer") ثبت مشتری جدید
+        button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="truecreatecustomer") ثبت مشتری جدید
+      div(v-if="isNewCustomerFormVisible" class="mb-6")
+       input(type="text" placeholder="نام" v-model="newCustomer.name" class="border rounded p-2 w-full mb-2")
+       input(type="email" placeholder="ایمیل" v-model="newCustomer.email" class="border rounded p-2 w-full mb-2")
+       input(type="text" placeholder="تلفن" v-model="newCustomer.phone" class="border rounded p-2 w-full mb-2")
+       button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitNewCustomer") ثبت
 
       table.w-full.table-auto.bg-white.rounded-lg.shadow-md.overflow-hidden
         thead.bg-gray-200
@@ -86,6 +118,6 @@ const changePage = (page) => {
               button.bg-red-500.hover.bg-red-600.text-white.font-semibold.py-1.px-3.rounded(@click="deleteCustomer(customer.id)") حذف
 
       div.flex.justify-center
-        TailwindPagination(:data="customers" @pagination-change-page="getCustomers")
-
+       TailwindPagination(:data="customers" @pagination-change-page="changePage")
 </template>
+

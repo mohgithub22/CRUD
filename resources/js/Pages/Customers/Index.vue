@@ -8,11 +8,12 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import AppLayout from '@/Layouts/AppLayout.vue'
-import { Inertia } from '@inertiajs/inertia'
-import { TailwindPagination } from 'laravel-vue-pagination';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import { Inertia } from '@inertiajs/inertia';
+import {TailwindPagination} from  'laravel-vue-pagination';
 import axios from 'axios';
 import { route } from 'ziggy-js';
+import modal from './modal.vue';
 function createCustomer() {
   axios.get(`/api/customers/Create`).then((response) => {
 
@@ -27,12 +28,12 @@ const edit = ref({ name: '', email: '', phone: '' ,edit:'' }); // اطلاعات
 // تابع برای ثبت مشتری جدید
 const submitNewCustomer = () => {
   axios.post('/customers', newCustomer.value).then(() => {
-    getCustomers(); // به‌روزرسانی لیست مشتریان
-    isNewCustomerFormVisible.value = false; // پنهان کردن فرم
-    newCustomer.value = { name: '', email: '', phone: '' };
+    getCustomers() ;// به‌روزرسانی لیست مشتریان
+    isNewCustomerFormVisible.value = false // پنهان کردن فرم
+    newCustomer.value = { name: '', email: '', phone: '' }
      // بازنشانی فرم
   });
-};
+}
 
 function editCustomer(customer) {
 router.get(`/customers/${customer.id}/edit`)
@@ -68,12 +69,17 @@ console.log(edit.value.id)
   })
 
 }
-
+const closeCreateCustomer = () => {
+  isNewCustomerFormVisible.value = false;
+};
+const closeEditCustomer = () => {
+  isNewCustomereditFormVisible.value = false;
+};
 function deleteCustomer(id) {
   if (confirm('آیا از حذف این مشتری اطمینان دارید؟')) {
     Inertia.delete(`/customers/${id}`)
   }
-}
+};
  const getCustomers = (page = 1) => {
             axios.get(`/api/customers?page=${page}`).then((response)=>{
             users.value = response.data;
@@ -105,7 +111,7 @@ const changePage = (page) => {
 <template lang="pug">
  app-layout
   template(#index)
-    // ارتفاع 30px
+    
     div.h-8
     div.max-w-4xl.mx-auto.p-6.bg-gray-100.rounded-lg.shadow-lg
       h1.text-3xl.font-bold.text-center.mb-8.text-gray-800 لیست مشتریان
@@ -113,17 +119,22 @@ const changePage = (page) => {
       div.flex.justify-center.gap-4.mb-6
         button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-2.px-4.rounded(@click="dashbord") حساب کاربری
         button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="truecreatecustomer") ثبت مشتری جدید
-      div(v-if="isNewCustomerFormVisible" class="mb-6")
-       input(type="text" placeholder="نام" v-model="newCustomer.name" class="border rounded p-2 w-full mb-2")
-       input(type="email" placeholder="ایمیل" v-model="newCustomer.email" class="border rounded p-2 w-full mb-2")
-       input(type="text" placeholder="تلفن" v-model="newCustomer.phone" class="border rounded p-2 w-full mb-2")
-       button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitNewCustomer") 
+      modal(:isVisible='isNewCustomerFormVisible' :closeModal='closeCreateCustomer')
+        template(#t)
+         h3.text-lg.font-bold.mb-4 ثبت مشتری جدید
+         input(type="text" placeholder="نام" v-model="newCustomer.name" class="border rounded p-2 w-full mb-2")
+         input(type="email" placeholder="ایمیل" v-model="newCustomer.email" class="border rounded p-2 w-full mb-2")
+         input(type="text" placeholder="تلفن" v-model="newCustomer.phone" class="border rounded p-2 w-full mb-2")
+         button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitNewCustomer") ثبت
+         
        
-      div(v-if="isNewCustomereditFormVisible" class="mb-6")
-       input(type="text" placeholder="نام" v-model="edit.name" class="border rounded p-2 w-full mb-2")
-       input(type="email" placeholder="ایمیل" v-model="edit.email" class="border rounded p-2 w-full mb-2")
-       input(type="text" placeholder="تلفن" v-model="edit.phone" class="border rounded p-2 w-full mb-2")
-       button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitEditCustomer") ثبت
+      modal(:isVisible='isNewCustomereditFormVisible' :closeModal='closeEditCustomer')
+        template(#t)
+         h3.text-lg.font-bold.mb-4 ویرایش مشتری
+         input(type="text" placeholder="نام" v-model="edit.name" class="border rounded p-2 w-full mb-2")
+         input(type="email" placeholder="ایمیل" v-model="edit.email" class="border rounded p-2 w-full mb-2")
+         input(type="text" placeholder="تلفن" v-model="edit.phone" class="border rounded p-2 w-full mb-2")
+         button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitEditCustomer") ثبت
 
       table.w-full.table-auto.bg-white.rounded-lg.shadow-md.overflow-hidden
         thead.bg-gray-200
@@ -137,10 +148,9 @@ const changePage = (page) => {
             td.px-4.py-2 {{ customer?.name || "eee" }}
             td.px-4.py-2 {{ customer?.email || 'email' }}
             td.px-4.py-2 {{ customer?.phone || 'phone' }}
-            td.px-4.py-2
-              button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-1.px-3.rounded.mr-2(@click="trueeditcustomer(customer)") ویرایش
-              button.bg-red-500.hover.bg-red-600.text-white.font-semibold.py-1.px-3.rounded(@click="deleteCustomer(customer.id)") حذف
-
+        
+            button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-1.px-3.rounded.mr-2(@click="trueeditcustomer(customer)") ویرایش
+            button.bg-red-500.hover.bg-red-600.text-white.font-semibold.py-1.px-3.rounded(@click="deleteCustomer(customer.id)") حذف
       div.flex.justify-center
         TailwindPagination(:data="customers" @pagination-change-page="changePage")
 </template>

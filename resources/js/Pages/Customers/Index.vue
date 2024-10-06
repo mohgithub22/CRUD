@@ -13,6 +13,8 @@ import { Inertia } from '@inertiajs/inertia';
 import {TailwindPagination} from  'laravel-vue-pagination';
 import axios from 'axios';
 import { route } from 'ziggy-js';
+import SearchBar from './SearchBar.vue'; // ایمپورت کامپوننت نوار جستجو
+
 import modal from './modal.vue';
 function createCustomer() {
   axios.get(`/api/customers/Create`).then((response) => {
@@ -24,16 +26,23 @@ function dashbord(){
 }
 const newCustomer = ref({ name: '', email: '', phone: '' }); // اطلاعات مشتری جدید
 const edit = ref({ name: '', email: '', phone: '' ,edit:'' }); // اطلاعات مشتری جدید
-
+const errors = ref({})
 // تابع برای ثبت مشتری جدید
 const submitNewCustomer = () => {
-  axios.post('/customers', newCustomer.value).then(() => {
-    getCustomers() ;// به‌روزرسانی لیست مشتریان
-    isNewCustomerFormVisible.value = false // پنهان کردن فرم
-    newCustomer.value = { name: '', email: '', phone: '' }
-     // بازنشانی فرم
-  });
-}
+  try {
+    axios.post('api/customers', newCustomer.value).then(() => {
+      getCustomers(); // به‌روزرسانی لیست مشتریان
+      isNewCustomerFormVisible.value = false; // پنهان کردن فرم
+      newCustomer.value = { name: '', email: '', phone: '' }; // بازنشانی فرم
+    });
+  } catch (error) {
+    if (error.response && error.response.data.errors) {
+      errors.value = error.response.data.errors;
+    }
+  }
+};
+
+
 
 function editCustomer(customer) {
 router.get(`/customers/${customer.id}/edit`)
@@ -50,7 +59,7 @@ const users = ref({
     }
 })
 
-
+const editerrors = ref({})
 function truecreatecustomer(){
   isNewCustomerFormVisible.value =true;
 }
@@ -62,12 +71,16 @@ function trueeditcustomer(customer){
   isNewCustomereditFormVisible.value =true;
 }
 function submitEditCustomer(){
-console.log(edit.value.id)
 
-  axios.put(`/customers/${edit.value.id}` ,edit.value).then(() => {
+ try{ axios.put(`api/customers/${edit.value.id}` ,edit.value).then(() => {
     edit.value.id = "";
   })
+}catch(error){
+  if(error.response && error.response.data.errors){
+    editerrors.value = error.response.data.errors
+  }
 
+}
 }
 const closeCreateCustomer = () => {
   isNewCustomerFormVisible.value = false;
@@ -86,9 +99,9 @@ function deleteCustomer(id) {
 
             });
     }
-defineProps({
+const props = defineProps({
     title: String,
-    customers:Object
+    customers:Array
 });
 
 const showingNavigationDropdown = ref(false);
@@ -100,18 +113,30 @@ const switchToTeam = (team) => {
         preserveState: false,
     });
 };
-
+const customers = ref(props.customers || []); // اگر props.customers موجود نیست، یک آرایه خالی می‌سازید.
+const filteredCustomers = ref(customers.value); // تعریف متغیر برای مشتریان فیلترشده
 const logout = () => {
     router.post(router('logout'));
 };
 const changePage = (page) => {
   router.get(`/customers?page=${page}`);
 };
+const handleSearch = (query) => {
+  if (query.trim() === '') {
+    filteredCustomers.data = customers.value.data; // اگر هیچ جستجویی وجود نداشت، همه مشتریان را نشان می‌دهیم
+  } else {
+    // فیلتر کردن مشتریان بر اساس ورودی جستجو
+    filteredCustomers.value.data = customers.value.data.filter((customer) =>
+      customer.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+};
 </script>
 <template lang="pug">
  app-layout
   template(#index)
-    
+    SearchBar(@search="handleSearch") <!-- استفاده از نوار جستجو -->
+
     div.h-8
     div.max-w-4xl.mx-auto.p-6.bg-gray-100.rounded-lg.shadow-lg
       h1.text-3xl.font-bold.text-center.mb-8.text-gray-800 لیست مشتریان
@@ -123,8 +148,11 @@ const changePage = (page) => {
         template(#t)
          h3.text-lg.font-bold.mb-4 ثبت مشتری جدید
          input(type="text" placeholder="نام" v-model="newCustomer.name" class="border rounded p-2 w-full mb-2")
+         div.text-red-500(v-if="errors.value.name") {{ errors.value.name[0] }}
          input(type="email" placeholder="ایمیل" v-model="newCustomer.email" class="border rounded p-2 w-full mb-2")
+         <!-- div.text-red-500(v-if="errors.value.email") {{ errors.value.email[0] }}  -->
          input(type="text" placeholder="تلفن" v-model="newCustomer.phone" class="border rounded p-2 w-full mb-2")
+         <!-- div.text-red-500(v-if="errors.value.phone") {{ errors.value.phone[0] }}  -->
          button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitNewCustomer") ثبت
          
        
@@ -132,8 +160,11 @@ const changePage = (page) => {
         template(#t)
          h3.text-lg.font-bold.mb-4 ویرایش مشتری
          input(type="text" placeholder="نام" v-model="edit.name" class="border rounded p-2 w-full mb-2")
+         <!-- div.text-red-500(v-if="editerrors.value.name") {{ editerrors.value.name[0] }}  -->
          input(type="email" placeholder="ایمیل" v-model="edit.email" class="border rounded p-2 w-full mb-2")
+         <!-- div.text-red-500(v-if="editerrors.value.email") {{ editerrors.value.email[0] }}  -->
          input(type="text" placeholder="تلفن" v-model="edit.phone" class="border rounded p-2 w-full mb-2")
+         <!-- div.text-red-500(v-if="editerrors.value.phone") {{ editerrors.value.phone[0] }} نمایش خطای فیلد نام -->
          button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitEditCustomer") ثبت
 
       table.w-full.table-auto.bg-white.rounded-lg.shadow-md.overflow-hidden
@@ -144,11 +175,10 @@ const changePage = (page) => {
             th.px-4.py-2.text-gray-600 تلفن
             th.px-4.py-2.text-gray-600 عملیات
         tbody
-          tr(v-for="customer in customers.data" :key="customer.id" class="text-center border-b hover:bg-gray-100")
+          tr(v-for="customer in filteredCustomers.data" :key="customer.id" class="text-center border-b hover:bg-gray-100")
             td.px-4.py-2 {{ customer?.name || "eee" }}
             td.px-4.py-2 {{ customer?.email || 'email' }}
             td.px-4.py-2 {{ customer?.phone || 'phone' }}
-        
             button.bg-blue-500.hover.bg-blue-600.text-white.font-semibold.py-1.px-3.rounded.mr-2(@click="trueeditcustomer(customer)") ویرایش
             button.bg-red-500.hover.bg-red-600.text-white.font-semibold.py-1.px-3.rounded(@click="deleteCustomer(customer.id)") حذف
       div.flex.justify-center

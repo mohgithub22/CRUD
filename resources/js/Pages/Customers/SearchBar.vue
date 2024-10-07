@@ -3,28 +3,41 @@
           <input
             type="text"
             v-model="query"
-            @keydown="h"
+            
             placeholder="جستجو..."
             class="border rounded p-2 w-full"
-            @input="search"
           />
+          <button @click="h">بگرد</button>
         </div>
       </template>
       
       <script setup>
       import { ref, defineEmits } from 'vue';
-      
+      import axios from 'axios';
+      import { router } from '@inertiajs/vue3';
       const emit = defineEmits(['search']);
       const query = ref('');
       
-      const search = () => {
-        emit('search', query.value);
-      };
-      const h = (event)=>{
-          if(event.key === 'Backspace'){
-            search()
-          }
-      }
+      // const search = () => {
+      //   emit('search', query.value);
+      // };
+      const h = () => {
+        alert("Button clicked!"); // تست فراخوانی تابع
+
+         axios.get('/customers', { params: { query: query.value } })
+        .then(response => {
+            // می‌توانید نتیجه را در اینجا پردازش کنید
+            
+        })
+        .catch(error => {
+            // مدیریت خطا
+            console.error("Error fetching customers:", error);
+        });
+};
+
+          
+      
+      
       </script>
       
       <style scoped>

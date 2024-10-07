@@ -9,9 +9,19 @@ use Inertia\Inertia;
 class CustomerController extends Controller
 {
     public function index(Request $request){
-        $customers = Customer::paginate(10);
+        
+            if($request->input('query') && trim($request->input('query')) !== ''){
+    
+                $QUER = $request->input('query');
+                $customers = Customer::where('name' ,'LIKE' ,'%' . $QUER . '%')->get();
+                
+            }else{
+                $customers = Customer::paginate(10);
+            }
+            
             return Inertia::render('Customers/Index', [
-                'customers' => $customers
+                'customers' => $customers,
+                
             ]);
        
     }
@@ -53,4 +63,15 @@ class CustomerController extends Controller
         
        return  Inertia::render('Customers/edit' ,['cus' => $customer]);
     }
+    // public function search(Request $request){
+    //     $request->validate([
+    //         "query" => "required|max:255|string"
+    //     ]);
+    //     $query = $request->query;
+    //     $customers = Customer::where('name' , 'LIKE' ,'%{$query}%')->get();
+    //     return Inertia::render('Customers/Index', [
+    //         'customerssearch' => $customers
+    //     ]);
+
+    // }
 }

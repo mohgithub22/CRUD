@@ -7,5 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::post('api/customers',[CustomerController::class ,'create']);
-Route::put('api/customers/{cusotmers}' ,[CustomerController::class,'update']);
+Route::post('customers',[CustomerController::class ,'store']);
+Route::put('customers/{cusotmers}' ,[CustomerController::class,'update']);
+Route::post('/search' , [CustomerController::class , 'search']);

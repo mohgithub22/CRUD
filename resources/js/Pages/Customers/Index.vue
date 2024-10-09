@@ -25,7 +25,7 @@ function dashbord(){
   return router.get(`/dashboard`)
 }
 const newCustomer = ref({ name: '', email: '', phone: '' }); // اطلاعات مشتری جدید
-const edit = ref({ name: '', email: '', phone: '' ,edit:'' }); // اطلاعات مشتری جدید
+const edit = ref({ name: '', email: '', phone: '' ,id:'' }); // اطلاعات مشتری جدید
 const errors = ref({})
 // تابع برای ثبت مشتری جدید
 const submitNewCustomer = () => {
@@ -33,7 +33,8 @@ const submitNewCustomer = () => {
     axios.post('/api/customers', newCustomer.value).then(() => {
       getCustomers(); // به‌روزرسانی لیست مشتریان
       isNewCustomerFormVisible.value = false; // پنهان کردن فرم
-      newCustomer.value = { name: '', email: '', phone: '' }; // بازنشانی فرم
+      newCustomer.value = { name: '', email: '', phone: '' };
+      customers.value = response.data.Allcustomers // بازنشانی فرم
     })
     .catch((error)=>{
       if(error.response && error.response.data.errors){
@@ -76,9 +77,19 @@ function trueeditcustomer(customer){
 }
 function submitEditCustomer(){
 
- axios.put(`api/customers/${edit.value.id}` ,edit.value).then(() => {
-    edit.value.id = "";
-  })
+ axios.put(`/api/customers/${edit.value.id}` ,edit.value).then((response) => {
+      customers.value = response.data.Allcustomers; // فرض بر اینکه لیست جدید مشتریان در پاسخ داده می‌شود
+      isNewCustomereditFormVisible.value =false;
+
+  })    .catch((error)=>{
+      if(error.response && error.response.data.errors){
+        editerrors.value = error.response.data.errors
+        console.log(edit.value.id);
+
+      }else{
+        console.error(error)
+      }
+    });
 }
 
 
@@ -91,7 +102,9 @@ const closeEditCustomer = () => {
 };
 function deleteCustomer(id) {
   if (confirm('آیا از حذف این مشتری اطمینان دارید؟')) {
-    Inertia.delete(`/customers/${id}`)
+    axios.delete(`/customers/${id}`).then((response)=>{
+          customers.value = response.data.allcustomers
+    })
   }
 };
  const getCustomers = (page = 1) => {
@@ -103,6 +116,7 @@ function deleteCustomer(id) {
 const props = defineProps({
     title: String,
     customers:Array,
+    // Allcustomers:Array
     
 });
 
@@ -153,11 +167,11 @@ const changePage = (page) => {
         template(#t)
          h3.text-lg.font-bold.mb-4 ویرایش مشتری
          input(type="text" placeholder="نام" v-model="edit.name" class="border rounded p-2 w-full mb-2")
-         <!-- div.text-red-500(v-if="editerrors.value.name") {{ editerrors.value.name[0] }}  -->
+         div.text-red-500(v-if="editerrors.name") {{ editerrors.name[0] }} 
          input(type="email" placeholder="ایمیل" v-model="edit.email" class="border rounded p-2 w-full mb-2")
-         <!-- div.text-red-500(v-if="editerrors.value.email") {{ editerrors.value.email[0] }}  -->
+         div.text-red-500(v-if="editerrors.email") {{ editerrors.email[0] }} 
          input(type="text" placeholder="تلفن" v-model="edit.phone" class="border rounded p-2 w-full mb-2")
-         <!-- div.text-red-500(v-if="editerrors.value.phone") {{ editerrors.value.phone[0] }} نمایش خطای فیلد نام -->
+         div.text-red-500(v-if="editerrors.phone") {{ editerrors.phone[0] }} نمایش خطای فیلد نام
          button.bg-green-500.hover.bg-green-600.text-white.font-semibold.py-2.px-4.rounded(@click="submitEditCustomer") ثبت
 
       table.w-full.table-auto.bg-white.rounded-lg.shadow-md.overflow-hidden
@@ -168,7 +182,7 @@ const changePage = (page) => {
             th.px-4.py-2.text-gray-600 تلفن
             th.px-4.py-2.text-gray-600 عملیات
         tbody
-          tr( v-for="customer in  customers.data" :key="customer?.id" class="text-center border-b hover:bg-gray-100")
+          tr( v-for="customer in  customers.data" :key="customer?.id" class="text-center border-b hover.bg-gray-100")
             td.px-4.py-2 {{ customer?.name || "eee" }}
             td.px-4.py-2 {{ customer?.email || 'email' }}
             td.px-4.py-2 {{ customer?.phone || 'phone' }}

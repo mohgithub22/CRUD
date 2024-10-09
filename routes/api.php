@@ -8,5 +8,5 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::post('customers',[CustomerController::class ,'store']);
-Route::put('customers/{cusotmers}' ,[CustomerController::class,'update']);
+Route::resource('customers', CustomerController::class)->names('customers');
 Route::post('/search' , [CustomerController::class , 'search']);

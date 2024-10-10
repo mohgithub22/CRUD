@@ -5,7 +5,10 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Validation\Rule; // این خط را اضافه کنید
+use Illuminate\Validation\Rule;
+use App\Models\User;// این خط را اضافه کنید
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 
 class CustomerController extends Controller
@@ -39,7 +42,7 @@ class CustomerController extends Controller
         Customer::create($request->all());
         return response()->json([
             'message' => 'Customer updated successfully',
-            'Allcustomers' => Customer::paginate(10),
+            'Allcustomers' => Customer::where('name' , $request->email),
         ]);
 
 
@@ -47,7 +50,11 @@ class CustomerController extends Controller
     }
     public function update(Request $request, Customer $customer)
 
-    {  
+    {   $role = Role::create(['name' => 'admin']);
+        $permission = Permission::create(['name' => 'edit articles']);
+        $role->givePermissionTo($permission);
+
+
         $request->validate([
             'name' => 'required|string|max:255',
         'email' => [
@@ -61,7 +68,7 @@ class CustomerController extends Controller
         $customer->update($request->all());
         return response()->json([
             'message' => 'Customer updated successfully',
-            'Allcustomers' => Customer::paginate(10),
+            'Allcustomers' => Customer::find($customer->id),
         ]); }
     public function destroy(Customer $customer)
     {
@@ -75,6 +82,16 @@ class CustomerController extends Controller
     public function show(){
         return Inertia::render('Customers/Create');
     }
+
+
+    public function dash(User $user){
+        return Inertia::render('Dashboard' ,[]);
+
+    }
+
+
+
+
     public function edit(Customer $customer){
         
        return  Inertia::render('Customers/edit' ,['cus' => $customer]);

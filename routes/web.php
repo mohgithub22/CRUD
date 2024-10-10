@@ -14,6 +14,7 @@ Route::get('/', function () {
 });
 
 Route::middleware([
+    'auth',
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
@@ -26,4 +27,5 @@ Route::middleware([
 });
 Route::get('/lay' ,[CustomerController::class ,'Lay']);
 
+Route::get('/dashboard', [CustomerController::class, 'dash'])->name('dashboard');
 

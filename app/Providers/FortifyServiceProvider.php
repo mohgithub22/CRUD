@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cookie;
 
+use App\Models\User;// این خط را اضافه کنید
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -42,5 +45,14 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
+        // Fortify::authenticateUsing(function (Request $request) {
+        //     $user = User::where('email', $request->email)->first();
+
+        //     if ($user && Hash::check($request->password, $user->password)) {
+        //         $token = $user->createToken('API Token')->plainTextToken; // فرض بر این است که از Sanctum استفاده می‌کنی
+        //         Cookie::queue('token', $token, 60); 
+        //         return $user;
+        //     }
+        // });
     }
 }

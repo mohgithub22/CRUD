@@ -1,7 +1,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -14,8 +14,9 @@ import {TailwindPagination} from  'laravel-vue-pagination';
 import axios from 'axios';
 import { route } from 'ziggy-js';
 import SearchBar from './SearchBar.vue'; // ایمپورت کامپوننت نوار جستجو
-
+import Cookies from 'js-cookie';
 import modal from './modal.vue';
+
 function createCustomer() {
   axios.get(`/api/customers/Create`).then((response) => {
 
@@ -30,11 +31,11 @@ const errors = ref({})
 // تابع برای ثبت مشتری جدید
 const submitNewCustomer = () => {
   
-    axios.post('/api/customers', newCustomer.value).then(() => {
+    axios.post('/api/customers', newCustomer.value).then((response) => {
       getCustomers(); // به‌روزرسانی لیست مشتریان
       isNewCustomerFormVisible.value = false; // پنهان کردن فرم
       newCustomer.value = { name: '', email: '', phone: '' };
-      customers.value = response.data.Allcustomers // بازنشانی فرم
+      customers.value.data.push(response.data.Allcustomers) // بازنشانی فرم
     })
     .catch((error)=>{
       if(error.response && error.response.data.errors){
@@ -75,11 +76,22 @@ function trueeditcustomer(customer){
   edit.value.id = customer.id
   isNewCustomereditFormVisible.value =true;
 }
+// const token = Cookies.get('token');
 function submitEditCustomer(){
+  console.log(usePage().props.auth.token); // بررسی اینکه توکن به درستی دریافت شده
 
- axios.put(`/api/customers/${edit.value.id}` ,edit.value).then((response) => {
-      customers.value = response.data.Allcustomers; // فرض بر اینکه لیست جدید مشتریان در پاسخ داده می‌شود
-      isNewCustomereditFormVisible.value =false;
+ axios.put(`/api/customers/${edit.value.id}` ,edit.value, { 
+  headers:{
+    Authorization: usePage().props.auth.token
+
+  },
+   withCredentials: true
+
+ }).then((response) => {
+  let updatedCustomer = response.data.Allcustomers
+  const index = customers.value.data.findIndex((customer) => customer.id === updatedCustomer.id);
+  customers.value.data[index]=updatedCustomer; 
+  isNewCustomereditFormVisible.value =false;
 
   })    .catch((error)=>{
       if(error.response && error.response.data.errors){
@@ -116,6 +128,8 @@ function deleteCustomer(id) {
 const props = defineProps({
     title: String,
     customers:Array,
+    auth: Object, // اضافه کردن auth به عنوان prop
+
     // Allcustomers:Array
     
 });
@@ -194,3 +208,4 @@ const changePage = (page) => {
 
 </template>
 
+ 

@@ -5,16 +5,16 @@
 
 
 namespace App\Http\Middleware;
-
-use Inertia\Middleware\Illuminate\Http\Request;
-
+use illuminate\Http\Request;
 class HandleInertiaRequests extends Middleware
 {
     protected $rootView = 'app';
 
-    public function share(): array
+    public function share(Request $request): array
     {
         return [
+            'auth.token' => $request->user()?'Bearer'.
+            $request->user()->createToken('auth_token')->plainTextToken:null
         ];
     }
 }
